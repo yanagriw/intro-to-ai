@@ -7,21 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def create_testing_data():
-    """
-    Data = a newswire represented as a sequence of integers (representing words) 
-    Labels = one of 46 categories the newswire talks about
-    Consider only the 10000 most often used words, vectorization produces a vector of length 10000, index i = 1 if word i is in the newswire
-    One hot labels is a vector of length 46 with 1 at the position of the correct category
-    """
+
     (train_data, train_labels), (test_data, test_labels) = reuters.load_data(num_words=10000)
 
     train = vectorize_sequences(train_data)
     test = vectorize_sequences(test_data)
     one_hot_train_labels = to_categorical(train_labels)
     one_hot_test_labels = to_categorical(test_labels)
-
-    # For fun, we can decode the input data to see what a newswire looks like
-    #decode_input_data(train_data)
 
     return (train, one_hot_train_labels, test, one_hot_test_labels)
 
@@ -42,11 +34,7 @@ def decode_input_data(train_data):
 
 
 def create_and_train_network(input):
-    """
-    Create a network with the input of size 10000, two hidden layers, and one output layer of size 46
-    The output of the network is a vector of probabilities the newswire falls into the specific category
-    Set aside 1000 samples for validation, use the rest for training
-    """
+
     (train,train_labels,_,_) = input
 
     # specify the shape of the network
@@ -81,11 +69,7 @@ def categorize_test(input, model):
     return pred
 
 def print_graphs(history):
-    """
-    History contains data about the training process. It contains an entry for each metric used for both training and validation.
-    Specifically, we plot loss = difference between the expected outcome and the produced outcome
-    and accuracy = fraction of predictions the model got right
-    """
+
     loss = history.history['loss']
     val_loss = history.history['val_loss']
 
@@ -123,11 +107,11 @@ if __name__ == "__main__":
     # create and train the neural network
     (history,model) = create_and_train_network(input)
 
-    # print("Train set:")
-    # model.evaluate(input[0][1000:], input[1][1000:])
+    print("Train set:")
+    model.evaluate(input[0][1000:], input[1][1000:])
 
-    # print("Validation set:")
-    # model.evaluate(input[0][:1000], input[1][:1000])
+    print("Validation set:")
+    model.evaluate(input[0][:1000], input[1][:1000])
 
     print("Test set:")
     categorize_test(input, model)
